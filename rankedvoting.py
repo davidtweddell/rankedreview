@@ -8,25 +8,14 @@ import utils
 # global control variable
 VERBOSE = False
 
+top_N = 5
+
 # where are we now?
 frame = inspect.currentframe().f_code.co_name
 
 # load the file
 fn = "./covid-nois.xlsx"
 df = utils.load_file(fn)
-
-
-
-# experimental - define the cutline based on average amounts
-# amount = df['Amount'].sum()
-# avg_amt = df['Amount'].mean()
-# print(amount, avg_amt)
-# total_envelope = 1.8e6
-# n_avg = math.floor(total_envelope/avg_amt)
-
-# utils.print_message(frame, "Based on envelope, we could {0} average-sized proposals.".format(n_avg))
-
-
 
 
 # make a list of candidates
@@ -58,16 +47,16 @@ for voter in voters_list:
     # we can't use that for comparison, so let's set unrated candidates to a 
     # low preference - say 99, then use map to convert everything 
     # to a list of ints
-    ranks = list(map(int,[99 if x == '' else x for x in ranks]))
+    ranks = list(map(int,[99 if r == '' else r for r in ranks]))
 
     # create an empty ballot and fill it with candidate names for this voter
     # b = []
-    b = [x for _,x in sorted(zip(ranks,candidate_names))]
+    b = [name for _,name in sorted(zip(ranks,candidate_names))]
 
-    # we could allow only the top 5 candidates
-    b = b[:5]
+    # we allow only the top N candidates
+    b = b[:top_N]
 
-    utils.print_message(frame, "{1}'s top-5 ballot from most to least preferred = {0}".format(b,voter))
+    utils.print_message(frame, "{1}'s top-{2} ballot from most to least preferred = {0}".format(b,voter, top_N))
 
     # add this ballot to the list of ballots
     ballots.append(Ballot(ranked_candidates=[Candidate(x) for x in b]))
