@@ -2,6 +2,7 @@ import pyrankvote
 import inspect
 import math
 import timeit
+import numpy as np
 from pyrankvote import Candidate, Ballot
 
 import utils
@@ -54,8 +55,24 @@ def make_ballots(df, candidate_names, voters_list):
 def read_ranked_columns(fn):
 
     frame = inspect.currentframe().f_code.co_name
+    utils.print_message(frame,"Reading data.")
 
-    pass
+    df = utils.load_file(fn)
+
+    return df
+
+
+def read_forms_data(fn):
+
+    frame = inspect.currentframe().f_code.co_name
+    utils.print_message(frame,"Reading data.")
+
+    df = utils.load_file(fn)
+
+    df.columns = [np.arange(0,df.shape[1])]
+
+    return df
+
 
 def make_candidate_list(df):
 
@@ -65,6 +82,7 @@ def make_candidate_list(df):
     utils.print_message(frame, "Making list of Candidates.")
     candidate_names = [] # just for assembling the ballots
     candidates = []      # to contain the Candidate objects
+
     # for each item in the dataframe:
     for item in df.iterrows():
         # get the candidate's surname and add it to both lists
@@ -77,7 +95,7 @@ def make_candidate_list(df):
 
     return candidates, candidate_names
 
-    pass
+
 
 def main():
     # where are we now?
@@ -85,7 +103,9 @@ def main():
 
     # load the file
     fn = "./covid-nois.xlsx"
-    df = utils.load_file(fn)
+    df = read_ranked_columns(fn)
+    df2 = read_forms_data("./td_ready.xlsx")
+    print(df2[5])
 
     # list of candidates
     candidates, candidate_names = make_candidate_list(df)
