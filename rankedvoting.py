@@ -11,35 +11,15 @@ VERBOSE = False
 top_N = 3
 
 
-def main():
-    # where are we now?
+def make_ballots(df, candidate_names, voters_list):
+
     frame = inspect.currentframe().f_code.co_name
-
-    # load the file
-    fn = "./covid-nois.xlsx"
-    df = utils.load_file(fn)
-
-
-    # make a list of candidates
-    utils.print_message(frame, "Making list of Candidates.")
-    candidate_names = [] # just for assembling the ballots
-    candidates = []      # to contain the Candidate objects
-    # for each item in the dataframe:
-    for item in df.iterrows():
-        # get the candidate's surname and add it to both lists
-        c = item[1][0].split(',')[0]
-        candidate_names.append(c)
-        candidates.append(Candidate(c))
-    # show the list of Candidate objects
-    if VERBOSE:
-        print(candidates)
-
 
     # make an empty list of ballots
     ballots = []
 
-    # make a list of voters (should match the input spreadsheet)
-    voters_list = ['voter1', 'voter2', 'voter3']
+    # # make a list of voters (should match the input spreadsheet)
+    # voters_list = ['voter1', 'voter2', 'voter3']
 
     utils.print_message(frame, "Making ballots.")
     for voter in voters_list:
@@ -63,20 +43,73 @@ def main():
         # add this ballot to the list of ballots
         ballots.append(Ballot(ranked_candidates=[Candidate(x) for x in b]))
 
+
     # show the ballots
     if VERBOSE:
         print("list of all ballots: {0}".format(ballots))
+    
+    return ballots
 
+
+def read_ranked_columns(fn):
+
+    frame = inspect.currentframe().f_code.co_name
+
+    pass
+
+def make_candidate_list(df):
+
+    frame = inspect.currentframe().f_code.co_name
+
+    # make a list of candidates
+    utils.print_message(frame, "Making list of Candidates.")
+    candidate_names = [] # just for assembling the ballots
+    candidates = []      # to contain the Candidate objects
+    # for each item in the dataframe:
+    for item in df.iterrows():
+        # get the candidate's surname and add it to both lists
+        c = item[1][0].split(',')[0]
+        candidate_names.append(c)
+        candidates.append(Candidate(c))
+    # show the list of Candidate objects
+    if VERBOSE:
+        print(candidates)
+
+    return candidates, candidate_names
+
+    pass
+
+def main():
+    # where are we now?
+    frame = inspect.currentframe().f_code.co_name
+
+    # load the file
+    fn = "./covid-nois.xlsx"
+    df = utils.load_file(fn)
+
+    # list of candidates
+    candidates, candidate_names = make_candidate_list(df)
+
+    # list of voters
+    voters_list = ['voter1', 'voter2', 'voter3']
+    
+    # make ballots
+    ballots = make_ballots(df, candidate_names, voters_list)
+
+    # run the vote
     utils.print_message(frame, "Executing STV selection.")
     election_result = pyrankvote.single_transferable_vote(
         candidates, 
         ballots, 
-        number_of_seats=3
+        number_of_seats=top_N
     )
 
     # Show the evolution and the final result
     utils.print_message(frame, "STV Selection Result.")
     print(election_result)
+
+
+
 
 if __name__ == "__main__":
     start = timeit.default_timer()
