@@ -1,0 +1,62 @@
+[load_file]:            load file ./covid-nois.xlsx
+[<module>]:             Making list of Candidates.
+[<module>]:             Making ballots.
+[<module>]:             voter1's top-5 ballot from most to least preferred = ['Arts', 'Ouriadov', 'De Lasa', 'Hill', 'Stillman']
+[<module>]:             voter2's top-5 ballot from most to least preferred = ['Arts', 'Li', 'Edgell', 'Stillman', 'Hill']
+[<module>]:             voter3's top-5 ballot from most to least preferred = ['Hill', 'Arts', 'Slessarev', 'Li', 'Ouriadov']
+[<module>]:             Executing STV selection.
+[<module>]:             STV Selection Result.
+ROUND 1
+Candidate      Votes  Status
+-----------  -------  --------
+Arts               2  Elected
+Hill               1  Elected
+Li                 0  Hopeful
+Ouriadov           0  Hopeful
+Slessarev          0  Hopeful
+Edgell             0  Hopeful
+De Lasa            0  Hopeful
+Stillman           0  Hopeful
+Zhang              0  Hopeful
+Prakash            0  Hopeful
+Loubani            0  Hopeful
+Rajakumar          0  Hopeful
+Fanchini           0  Hopeful
+Charpentier        0  Hopeful
+
+ROUND 2
+Candidate      Votes  Status
+-----------  -------  --------
+Arts            0.75  Elected
+Hill            0.75  Elected
+Li              0.62  Hopeful
+Ouriadov        0.62  Hopeful
+Slessarev       0.25  Rejected
+Edgell          0.00  Rejected
+De Lasa         0.00  Rejected
+Stillman        0.00  Rejected
+Prakash         0.00  Rejected
+Rajakumar       0.00  Rejected
+Fanchini        0.00  Rejected
+Loubani         0.00  Rejected
+Zhang           0.00  Rejected
+Charpentier     0.00  Rejected
+
+FINAL RESULT
+Candidate      Votes  Status
+-----------  -------  --------
+Arts            0.75  Elected
+Hill            0.75  Elected
+Li              0.88  Elected
+Ouriadov        0.62  Rejected
+Slessarev       0.00  Rejected
+Edgell          0.00  Rejected
+De Lasa         0.00  Rejected
+Stillman        0.00  Rejected
+Prakash         0.00  Rejected
+Rajakumar       0.00  Rejected
+Fanchini        0.00  Rejected
+Loubani         0.00  Rejected
+Zhang           0.00  Rejected
+Charpentier     0.00  Rejected
+
