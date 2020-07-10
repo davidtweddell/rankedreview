@@ -122,7 +122,10 @@ def main():
     # make the ballots
     for item in df2:
         b = item[5].split(';')
-        b = b[:5]
+        print(b)
+        # drop the last empty item
+        # probably other ways to do this to, with an iterator maybe
+        b = b[:(len(b)-1)]
         ballots.append(Ballot(ranked_candidates=[Candidate(x) for x in b]))
     if VERBOSE:
         print(ballots)
