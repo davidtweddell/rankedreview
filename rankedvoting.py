@@ -101,27 +101,47 @@ def main():
     # where are we now?
     frame = inspect.currentframe().f_code.co_name
 
-    # load the file
-    fn = "./covid-nois.xlsx"
-    df = read_ranked_columns(fn)
-    df2 = read_forms_data("./td_ready.xlsx")
-    print(df2[5])
+    # # CFI-EOF
+    # # load the file
+    # fn = "./covid-nois.xlsx"
+    # df = read_ranked_columns(fn)
+    # # list of candidates
+    # candidates, candidate_names = make_candidate_list(df)
+    # # list of voters
+    # voters_list = ['voter1', 'voter2', 'voter3']
+    # # make ballots
+    # ballots = make_ballots(df, candidate_names, voters_list)
 
-    # list of candidates
-    candidates, candidate_names = make_candidate_list(df)
 
-    # list of voters
-    voters_list = ['voter1', 'voter2', 'voter3']
-    
-    # make ballots
-    ballots = make_ballots(df, candidate_names, voters_list)
+
+    # TD Ready - totally different data structure
+    df2 = read_forms_data("./td_ready.xlsx").values.tolist()
+    ballots = []
+    candidates = []
+
+    # make the ballots
+    for item in df2:
+        b = item[5].split(';')
+        b = b[:5]
+        ballots.append(Ballot(ranked_candidates=[Candidate(x) for x in b]))
+    if VERBOSE:
+        print(ballots)
+
+    # make the list of candidates
+    c = sorted(df2[1][5].split(';')[:5])
+    for the_candidate in c:
+        candidates.append(Candidate(the_candidate))
+    # show the list of Candidate objects
+    if VERBOSE:
+        print(candidates)
+
 
     # run the vote
     utils.print_message(frame, "Executing STV selection.")
     election_result = pyrankvote.single_transferable_vote(
         candidates, 
         ballots, 
-        number_of_seats=top_N
+        number_of_seats=1
     )
 
     # Show the evolution and the final result
