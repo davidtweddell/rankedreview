@@ -12,6 +12,7 @@ VERBOSE = False
 top_N = 3
 
 
+# functions for generalized matrix of candidates (v) vs voters (h)
 def make_ballots(df, candidate_names, voters_list):
 
     frame = inspect.currentframe().f_code.co_name
@@ -52,6 +53,7 @@ def make_ballots(df, candidate_names, voters_list):
     return ballots
 
 
+# functions for generalized matrix of candidates (v) vs voters (h)
 def read_ranked_columns(fn):
 
     frame = inspect.currentframe().f_code.co_name
@@ -74,6 +76,7 @@ def read_forms_data(fn):
     return df
 
 
+# functions for generalized matrix of candidates (v) vs voters (h)
 def make_candidate_list(df):
 
     frame = inspect.currentframe().f_code.co_name
@@ -101,7 +104,6 @@ def main():
     # where are we now?
     frame = inspect.currentframe().f_code.co_name
 
-    # TD Ready - totally different data structure
     df2 = read_forms_data("./td_ready.xlsx").values.tolist()
     ballots = []
     candidates = []
@@ -109,11 +111,15 @@ def main():
     # make the ballots
     utils.print_message(frame, "Making ballots.")
 
+    # output from MS Forms is a totally different data structure than 
+    # the matrix type in the other functions I wrote
+    # - it contains a column with a list each respondent's ranking
+    # - items in the ranking column are separated by a semi-colon
     for item in df2:
         # ranked list is in column 5 (with 0-based index)
         b = item[5].split(';')
         # drop the last empty item
-        # probably other ways to do this to, with an iterator maybe
+        # TODO: probably other ways to do this to, with an iterator maybe
         b = b[:(len(b)-1)]
         ballots.append(Ballot(ranked_candidates=[Candidate(x) for x in b]))
     if VERBOSE:
@@ -121,8 +127,8 @@ def main():
 
     # make the list of candidates
     utils.print_message(frame, "Making list of candidate names.")
-
     # use the last ballot, sorted, to get the list of candidate names
+    # this is an easy way to do it and just re-uses the last ballot
     for the_candidate in sorted(b):
         candidates.append(Candidate(the_candidate))
     # show the list of Candidate objects
