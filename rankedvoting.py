@@ -17,11 +17,21 @@ import matrix_votes as mv # tools for a different arrangement of votes
 VERBOSE = False
 top_N = 3
 
+# functions for generalized matrix of candidates (v) vs voters (h)
+def read_ranked_columns(fn):
+
+    frame = inspect.currentframe().f_code.co_name
+    utils.print_message(frame,"Reading vote matrix data.")
+
+    df = utils.load_file(fn)
+
+    return df
+
 # local function to read forms data and rename columns for simplicity
 def read_forms_data(fn):
 
     frame = inspect.currentframe().f_code.co_name
-    utils.print_message(frame,"Reading data.")
+    utils.print_message(frame,"Reading MS Forms data.")
 
     df = utils.load_file(fn)
 
@@ -34,18 +44,44 @@ def main():
     # where are we now?
     frame = inspect.currentframe().f_code.co_name
 
+    # how many "seats" are being selected?
+    n_seats = 1
+
     # load the data into a dataframe
-    df = read_forms_data("./td_ready.xlsx").values.tolist()
+    df = read_forms_data("./forms_data.xlsx").values.tolist()
     ballots = []
     candidates = []
 
     # make the ballots
     utils.print_message(frame, "Making ballots.")
 
-    # output from MS Forms is a totally different data structure than 
-    # the matrix type in the other functions I wrote
+    # there are a couple of ways to arrange the data
+    # 1. ranked columns have a format of
+    #             voter1  voter2  voter 3
+    # candidate1   1       1        2
+    # candidate2   3       2        1
+    # candidate3   2       3        3
+    # etc.
+    # 
+    # use the functions in matrix_votes to construct ballots and candidate lists
+    #   - matrix_votes.make_candidate_list()
+    #   - matrix_votes.make_ballots()
+
+    # df = read_ranked_columns("./matrix_data.xlsx")
+    # candidate_names = []
+    # candidates, candidate_names = mv.make_candidate_list(df)
+    # ballots = mv.make_ballots(df, candidate_names, ['voter1', 'voter2', 'voter3'])
+
+    # 2. MS Forms "arrange in preferred order" data
     # - it contains a column with a list each respondent's ranking
     # - items in the ranking column are separated by a semi-colon
+    # - and must end with a semicolon too!
+    #
+    # voter1   candidate1;candidate2;candidate3;
+    # voter2   candidate2;candidate1;candidate3;
+    # etc.
+    # use the code below
+    #
     for item in df:
         # ranked list is in column 5 (with 0-based index)
         b = item[5].split(';')
@@ -72,7 +108,7 @@ def main():
     stv_election_result = pyrankvote.single_transferable_vote(
         candidates, 
         ballots, 
-        number_of_seats=1
+        number_of_seats=n_seats
     )
     stv_winner = stv_election_result.get_winners()[0].name
     utils.print_message(frame, "STV Selected: {0}".format(stv_winner))
@@ -86,7 +122,7 @@ def main():
     pbv_election_result = pyrankvote.preferential_block_voting(
         candidates, 
         ballots, 
-        number_of_seats=1
+        number_of_seats=n_seats
     )
     pbv_winner = pbv_election_result.get_winners()[0].name
     utils.print_message(frame, "PBV Selected: {0}".format(pbv_winner))

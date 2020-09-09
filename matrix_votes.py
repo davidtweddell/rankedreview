@@ -71,12 +71,3 @@ def make_candidate_list(df):
     return candidates, candidate_names
 
 
-# functions for generalized matrix of candidates (v) vs voters (h)
-def read_ranked_columns(fn):
-
-    frame = inspect.currentframe().f_code.co_name
-    utils.print_message(frame,"Reading data.")
-
-    df = utils.load_file(fn)
-
-    return df
