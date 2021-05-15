@@ -8,8 +8,10 @@ import numpy as np
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 
+VERBOSE = False
+
 # functions for generalized matrix of candidates (v) vs voters (h)
-def make_ballots(df, candidate_names, voters_list):
+def make_ballots(df, candidate_names, voters_list, top_N):
 
     frame = inspect.currentframe().f_code.co_name
 
@@ -36,7 +38,8 @@ def make_ballots(df, candidate_names, voters_list):
         # we allow only the top N candidates
         b = b[:top_N]
 
-        utils.print_message(frame, "{1}'s top-{2} ballot from most to least preferred = {0}".format(b,voter, top_N))
+        if VERBOSE:
+            utils.print_message(frame, "{1}'s top-{2} ballot from most to least preferred = {0}".format(b,voter, top_N))
 
         # add this ballot to the list of ballots
         ballots.append(Ballot(ranked_candidates=[Candidate(x) for x in b]))

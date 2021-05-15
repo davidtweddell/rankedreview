@@ -14,8 +14,8 @@ import matrix_votes as mv # tools for a different arrangement of votes
 
 
 # global control variabls
-VERBOSE = False
-top_N = 3
+VERBOSE = True
+top_N = 10
 
 # functions for generalized matrix of candidates (v) vs voters (h)
 def read_ranked_columns(fn):
@@ -45,10 +45,9 @@ def main():
     frame = inspect.currentframe().f_code.co_name
 
     # how many "seats" are being selected?
-    n_seats = 1
+    n_seats = 6
 
     # load the data into a dataframe
-    df = read_forms_data("./forms_data.xlsx").values.tolist()
     ballots = []
     candidates = []
 
@@ -67,10 +66,11 @@ def main():
     #   - matrix_votes.make_candidate_list()
     #   - matrix_votes.make_ballots()
 
-    # df = read_ranked_columns("./matrix_data.xlsx")
-    # candidate_names = []
-    # candidates, candidate_names = mv.make_candidate_list(df)
-    # ballots = mv.make_ballots(df, candidate_names, ['voter1', 'voter2', 'voter3'])
+    df = read_ranked_columns("./matrix_data.xlsx")
+    candidate_names = []
+    candidates, candidate_names = mv.make_candidate_list(df)
+    ballots = mv.make_ballots(df, candidate_names, ['voter1', 'voter2', 'voter3','voter4','voter5','voter6'], top_N)
+    print(df)
 
     # 2. MS Forms "arrange in preferred order" data
     # - it contains a column with a list each respondent's ranking
@@ -82,25 +82,26 @@ def main():
     # etc.
     # use the code below
     #
-    for item in df:
-        # ranked list is in column 5 (with 0-based index)
-        b = item[5].split(';')
-        # drop the last empty item
-        # TODO: probably other ways to do this to, with an iterator maybe
-        b = b[:(len(b)-1)]
-        ballots.append(Ballot(ranked_candidates=[Candidate(x) for x in b]))
-    if VERBOSE:
-        print(ballots)
+    # df = read_forms_data("./forms_data.xlsx").values.tolist()
+    # for item in df:
+    #     # ranked list is in column 5 (with 0-based index)
+    #     b = item[5].split(';')
+    #     # drop the last empty item
+    #     # TODO: probably other ways to do this to, with an iterator maybe
+    #     b = b[:(len(b)-1)]
+    #     ballots.append(Ballot(ranked_candidates=[Candidate(x) for x in b]))
+    # if VERBOSE:
+    #     print(ballots)
 
-    # make the list of candidates
-    utils.print_message(frame, "Making list of candidate names.")
-    # use the last ballot, sorted, to get the list of candidate names
-    # this is an easy way to do it and just re-uses the last ballot
-    for the_candidate in sorted(b):
-        candidates.append(Candidate(the_candidate))
+    # # make the list of candidates
+    # utils.print_message(frame, "Making list of candidate names.")
+    # # use the last ballot, sorted, to get the list of candidate names
+    # # this is an easy way to do it and just re-uses the last ballot
+    # for the_candidate in sorted(b):
+    #     candidates.append(Candidate(the_candidate))
     # show the list of Candidate objects
-    if VERBOSE:
-        print(candidates)
+    # if VERBOSE:
+    #     print(candidates)
 
 
     # run the STV vote
@@ -111,36 +112,36 @@ def main():
         number_of_seats=n_seats
     )
     stv_winner = stv_election_result.get_winners()[0].name
-    utils.print_message(frame, "STV Selected: {0}".format(stv_winner))
+    # utils.print_message(frame, "STV Selected: {0}".format(stv_winner))
     if VERBOSE:
         utils.print_message(frame, "STV Selection Result.")
         print(stv_election_result)
 
 
-    # run the PBV vote
-    utils.print_message(frame, "Executing PBV selection.")
-    pbv_election_result = pyrankvote.preferential_block_voting(
-        candidates, 
-        ballots, 
-        number_of_seats=n_seats
-    )
-    pbv_winner = pbv_election_result.get_winners()[0].name
-    utils.print_message(frame, "PBV Selected: {0}".format(pbv_winner))
-    if VERBOSE:
-        utils.print_message(frame, "PBV Selection Result.") 
-        print(pbv_election_result)
+    # # run the PBV vote
+    # utils.print_message(frame, "Executing PBV selection.")
+    # pbv_election_result = pyrankvote.preferential_block_voting(
+    #     candidates, 
+    #     ballots, 
+    #     number_of_seats=n_seats
+    # )
+    # pbv_winner = pbv_election_result.get_winners()[0].name
+    # utils.print_message(frame, "PBV Selected: {0}".format(pbv_winner))
+    # if VERBOSE:
+    #     utils.print_message(frame, "PBV Selection Result.") 
+    #     print(pbv_election_result)
 
 
-    # run the IRV vote
-    utils.print_message(frame, "Executing IRV selection.")
-    irv_election_result = pyrankvote.instant_runoff_voting(
-        candidates, 
-        ballots)
-    irv_winner = irv_election_result.get_winners()[0].name
-    utils.print_message(frame, "IRV Selected: {0}".format(irv_winner))
-    if VERBOSE:
-        utils.print_message(frame, "IRV Selection Result.")
-        print(pbv_election_result)
+    # # run the IRV vote
+    # utils.print_message(frame, "Executing IRV selection.")
+    # irv_election_result = pyrankvote.instant_runoff_voting(
+    #     candidates, 
+    #     ballots)
+    # irv_winner = irv_election_result.get_winners()[0].name
+    # utils.print_message(frame, "IRV Selected: {0}".format(irv_winner))
+    # if VERBOSE:
+    #     utils.print_message(frame, "IRV Selection Result.")
+    #     print(pbv_election_result)
 
 
 if __name__ == "__main__":
