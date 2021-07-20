@@ -5,6 +5,7 @@ import timeit
 
 # external modules
 import numpy as np
+import pandas as pd
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 
@@ -13,9 +14,9 @@ import utils
 import matrix_votes as mv # tools for a different arrangement of votes
 
 
-# global control variabls
+# global control variables
 VERBOSE = True
-top_N = 10
+top_N = 2
 
 # functions for generalized matrix of candidates (v) vs voters (h)
 def read_ranked_columns(fn):
@@ -45,7 +46,7 @@ def main():
     frame = inspect.currentframe().f_code.co_name
 
     # how many "seats" are being selected?
-    n_seats = 6
+    n_seats = 2
 
     # load the data into a dataframe
     ballots = []
@@ -66,11 +67,14 @@ def main():
     #   - matrix_votes.make_candidate_list()
     #   - matrix_votes.make_ballots()
 
-    df = read_ranked_columns("./matrix_data.xlsx")
+    # df = read_ranked_columns("./matrix_data.xlsx")
+    df = read_ranked_columns("./cerc2.xlsx")
     candidate_names = []
     candidates, candidate_names = mv.make_candidate_list(df)
     ballots = mv.make_ballots(df, candidate_names, ['voter1', 'voter2', 'voter3','voter4','voter5','voter6'], top_N)
+    print("The ranked voting data:")
     print(df)
+
 
     # 2. MS Forms "arrange in preferred order" data
     # - it contains a column with a list each respondent's ranking
@@ -99,7 +103,7 @@ def main():
     # # this is an easy way to do it and just re-uses the last ballot
     # for the_candidate in sorted(b):
     #     candidates.append(Candidate(the_candidate))
-    # show the list of Candidate objects
+    # # show the list of Candidate objects
     # if VERBOSE:
     #     print(candidates)
 
@@ -111,8 +115,8 @@ def main():
         ballots, 
         number_of_seats=n_seats
     )
-    stv_winner = stv_election_result.get_winners()[0].name
-    # utils.print_message(frame, "STV Selected: {0}".format(stv_winner))
+    stv_winner = stv_election_result.get_winners()
+    utils.print_message(frame, "STV Selected: {0}".format(stv_winner))
     if VERBOSE:
         utils.print_message(frame, "STV Selection Result.")
         print(stv_election_result)

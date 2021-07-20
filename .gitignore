@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 data/covid-nois.xlsx
 data/td_ready.xlsx
+cerc*.xlsx
+cerc.xlsx
